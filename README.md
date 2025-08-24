@@ -1,4 +1,7 @@
-# Mastermind (CLI)
+![deploy](https://github.com/luisgomez214/CMC_Thesis_Chatbot/actions/workflows/deploy.yml/badge.svg)
+
+
+# Mastermind 
 
 A simple command-line Mastermind game in Python. Guess the 4-digit secret code (digits 0–7, duplicates allowed) within 10 tries.
 
