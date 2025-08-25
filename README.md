@@ -3,7 +3,7 @@
 
 # Mastermind 
 
-A simple command-line Mastermind game in Python. Guess the 4-digit secret code (digits 0–7, duplicates allowed) within 10 tries.
+A simple command-line Mastermind game in Python. Guess the secret number code (digits 1–8, duplicates allowed) within 10 tries.
 
 ## How to Run
 
