@@ -24,7 +24,7 @@ jobs:
 
       - name: Generate guesses (10 identical guesses)
         run: |
-          python random.py
+          python .github/workflows/random.py
           echo "---- guesses.txt ----"
           cat guesses.txt
 
