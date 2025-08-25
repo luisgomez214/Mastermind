@@ -1,6 +1,6 @@
 import requests
 import random
-
+import getpass
 import time
 
 def countdown_timer(seconds):
@@ -44,8 +44,9 @@ def difficulty():
         return difficulty() 
 
 def multiplayer(level):
-    numbers = input(f"Player 1, secretly enter {level} numbers from 1-8, they may duplicate if you'd like (no spaces, e.g. 1134): ").strip()
-
+    numbers = getpass.getpass(
+        f"Player 1, secretly enter {level} numbers from 1-8, they may duplicate if you'd like (no spaces, e.g. 1134): "
+    ).strip()
     # length + digits check
     if len(numbers) != level or not numbers.isdigit():
         print("Try again!")
