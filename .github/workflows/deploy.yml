@@ -18,11 +18,11 @@ jobs:
         with:
           python-version: '3.10'
 
-      - name: Install dependencies (if any)
+      - name: Install dependencies
         run: |
+          set -euo pipefail
           python -m pip install --upgrade pip
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-          # ensure requests is available for main.py even if there's no requirements.txt
           python - <<'PY'
           import importlib, subprocess, sys
           try:
@@ -31,30 +31,38 @@ jobs:
               subprocess.check_call([sys.executable, "-m", "pip", "install", "requests"])
           PY
 
-      - name: Generate 10 random guesses via Random.org (3 digits, 1–8)
+      - name: Generate 10 random guesses via Random.org (strict)
         run: |
+          set -euo pipefail
           : > guesses.txt
           for i in $(seq 1 10); do
-            curl -fsS "https://www.random.org/integers/?num=3&min=1&max=8&col=1&base=10&format=plain&rnd=new" \
-              | tr -d '\r' | tr '\n' ' ' >> guesses.txt || true
-            echo "" >> guesses.txt
+            raw="$(curl -fsS "https://www.random.org/integers/?num=3&min=1&max=8&col=1&base=10&format=plain&rnd=new")"
+            # Fail on any server-side error text
+            if printf "%s" "$raw" | grep -qi '^error:'; then
+              echo "Random.org error: $raw" >&2
+              exit 1
+            fi
+            # Condense to exactly 3 digits (strip CR/LF/spaces)
+            digits="$(printf "%s" "$raw" | tr -d '\r\n ' )"
+            echo "$digits" >> guesses.txt
           done
           echo "---- guesses.txt ----"
           cat guesses.txt
+          # Validate: exactly 10 lines, each line exactly 3 digits 1-8
+          [ "$(wc -l < guesses.txt)" -eq 10 ] || { echo "Expected 10 lines in guesses.txt"; exit 1; }
+          awk '!/^[1-8]{3}$/{print "Bad line:",$0; bad=1} END{exit bad}' guesses.txt
 
-      - name: Run main.py non-interactively (pick single player=1, difficulty=3)
+      - name: Run main.py non-interactively (1=single player, 3=easy)
         run: |
-          set -o pipefail
-          # Build stdin: choose mode '1', difficulty '3', then 10 guesses (strip spaces)
+          set -euo pipefail
           {
-            echo "1"
-            echo "4"
-            sed 's/ //g' guesses.txt
+            echo "1"   # mode: single player
+            echo "3"   # difficulty: easy
+            cat guesses.txt
           } | python main.py | tee game_run.txt
-        # If you want CI to never fail even if Random.org hiccups, uncomment:
-        # continue-on-error: true
 
       - name: Upload game transcript
+        if: always()  # still upload even if the job fails earlier
         uses: actions/upload-artifact@v4
         with:
           name: mastermind-game-run
