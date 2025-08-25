@@ -18,55 +18,45 @@ jobs:
         with:
           python-version: '3.10'
 
-      # If you don't need any Python deps, you can remove this step entirely.
       - name: Install dependencies (if any)
         run: |
           python -m pip install --upgrade pip
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          # ensure requests is available for main.py even if there's no requirements.txt
+          python - <<'PY'
+          import importlib, subprocess, sys
+          try:
+              importlib.import_module("requests")
+          except ImportError:
+              subprocess.check_call([sys.executable, "-m", "pip", "install", "requests"])
+          PY
 
-      - name: Generate 10 random guesses via Random.org (bash + curl)
+      - name: Generate 10 random guesses via Random.org (3 digits, 1–8)
         run: |
           : > guesses.txt
           for i in $(seq 1 10); do
-            curl -s "https://www.random.org/integers/?num=4&min=0&max=7&col=1&base=10&format=plain&rnd=new" \
-              | tr '\n' ' ' >> guesses.txt
+            curl -fsS "https://www.random.org/integers/?num=3&min=1&max=8&col=1&base=10&format=plain&rnd=new" \
+              | tr -d '\r' | tr '\n' ' ' >> guesses.txt || true
             echo "" >> guesses.txt
           done
           echo "---- guesses.txt ----"
           cat guesses.txt
 
-      - name: Run Mastermind simulation (always succeed)
+      - name: Run main.py non-interactively (pick single player=1, difficulty=3)
         run: |
-          python - <<'PY'
-          from collections import Counter
-          from pathlib import Path
-          import random
+          set -o pipefail
+          # Build stdin: choose mode '1', difficulty '3', then 10 guesses (strip spaces)
+          {
+            echo "1"
+            echo "3"
+            sed 's/ //g' guesses.txt
+          } | python main.py | tee game_run.txt
+        # If you want CI to never fail even if Random.org hiccups, uncomment:
+        # continue-on-error: true
 
-          def feedback(secret, guess):
-              exact = sum(s == g for s, g in zip(secret, guess))
-              common = sum((Counter(secret) & Counter(guess)).values())
-              return exact, common - exact
-
-          lines = Path("guesses.txt").read_text().strip().splitlines()
-          guesses = [[int(x) for x in ln.split()] for ln in lines if ln.strip()]
-
-          secret = [random.randint(0,7) for _ in range(4)]
-
-          log = []
-          log.append("=== Mastermind CI Run (non-failing) ===")
-          log.append("Secret: **** (hidden)")
-          for i, guess in enumerate(guesses, start=1):
-              exact, misplaced = feedback(secret, guess)
-              log.append(f"Turn {i:02d}: guess={guess} | exact={exact} misplaced={misplaced}")
-
-          out = "\n".join(log)
-          print(out)
-          Path("mastermind_ci.txt").write_text(out, encoding="utf-8")
-          PY
-
-      - name: Upload simulation transcript
+      - name: Upload game transcript
         uses: actions/upload-artifact@v4
         with:
-          name: mastermind-ci-transcript
-          path: mastermind_ci.txt
+          name: mastermind-game-run
+          path: game_run.txt
 
