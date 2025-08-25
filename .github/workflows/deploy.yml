@@ -33,7 +33,7 @@ jobs:
           set -euo pipefail
           {
             echo "1"   # mode: single player
-            echo "3"   # difficulty
+            echo "4"   # difficulty
             cat guesses.txt
           } | python main.py | tee game_run.txt
 
