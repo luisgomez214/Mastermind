@@ -79,7 +79,7 @@ def multiplayer(level):
         return multiplayer(level)
 
     return game(numbers, level)
-    
+
 def singleplayer(level):
     url = "https://www.random.org/integers/"
     params = {
@@ -92,8 +92,9 @@ def singleplayer(level):
         "rnd": "new"
     }
 
-    response = requests.get(url, params=params)
+    response = requests.get(url, params=params, timeout=5)
     numbers = [int(x) for x in response.text.strip().split()]
+    print(response)
     print(numbers)  
     game(numbers, level)
 
