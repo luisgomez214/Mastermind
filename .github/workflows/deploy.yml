@@ -18,14 +18,20 @@ jobs:
         with:
           python-version: '3.10'
 
+      # If you don't need any Python deps, you can remove this step entirely.
       - name: Install dependencies (if any)
         run: |
           python -m pip install --upgrade pip
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
-      - name: Generate 10 random guesses via Random.org
+      - name: Generate 10 random guesses via Random.org (bash + curl)
         run: |
-          python3 .github/workflows/fetch_guesses.py
+          : > guesses.txt
+          for i in $(seq 1 10); do
+            curl -s "https://www.random.org/integers/?num=4&min=0&max=7&col=1&base=10&format=plain&rnd=new" \
+              | tr '\n' ' ' >> guesses.txt
+            echo "" >> guesses.txt
+          done
           echo "---- guesses.txt ----"
           cat guesses.txt
 
@@ -41,11 +47,9 @@ jobs:
               common = sum((Counter(secret) & Counter(guess)).values())
               return exact, common - exact
 
-          # Load guesses (10 lines, each 4 ints 0-7)
           lines = Path("guesses.txt").read_text().strip().splitlines()
           guesses = [[int(x) for x in ln.split()] for ln in lines if ln.strip()]
 
-          # Secret code is only used for feedback math (no pass/fail)
           secret = [random.randint(0,7) for _ in range(4)]
 
           log = []
