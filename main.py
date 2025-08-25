@@ -94,8 +94,8 @@ def singleplayer(level):
 
     response = requests.get(url, params=params, timeout=5)
     numbers = [int(x) for x in response.text.strip().split()]
-    print(response)
-    print(numbers)  
+   #deebugprint(response)
+    #deebugprint(numbers)  
     game(numbers, level)
 
 def game(numbers, level): 
@@ -103,11 +103,14 @@ def game(numbers, level):
     print(f"\033[34mYou have {chances} chances remaining\033[0m")
     while chances != 0:
         guess = input(f"Player 1, enter {level} numbers from 1-8 (no spaces, e.g. 1234), there may be duplicates: ") 
-        list1 = [int(x) for x in guess]
-
-        if len(guess) != level or any(not x.isdigit() for x in guess) or any(v < 1 or v > 8 for v in list1):
+        if len(guess) != level or not guess.isdigit():
             print("Try again!")
-            continue 
+            continue
+
+        list1 = [int(x) for x in guess]
+        if any(v < 1 or v > 8 for v in list1):
+            print("Try again!")
+            continue
         elif list1 == numbers:
             print("\033[1mCorrect! You win!\033[0m")
             return
