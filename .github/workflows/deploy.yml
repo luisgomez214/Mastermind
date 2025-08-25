@@ -48,7 +48,7 @@ jobs:
           # Build stdin: choose mode '1', difficulty '3', then 10 guesses (strip spaces)
           {
             echo "1"
-            echo "3"
+            echo "4"
             sed 's/ //g' guesses.txt
           } | python main.py | tee game_run.txt
         # If you want CI to never fail even if Random.org hiccups, uncomment:

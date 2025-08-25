@@ -1,6 +1,7 @@
 import requests
 import random
 import time
+import getpass
 
 def rules():
     print("\033[32mWelcome to Mastermind!\033[0m")
@@ -22,7 +23,7 @@ def rules():
         return rules()
 
 def computer_guess(level):
-    numbers = input(f"Player 2, secretly enter {level} numbers from 1-8 (no spaces, e.g. 1234): ").strip()
+    numbers = getpass.getpass(f"Player 2, secretly enter {level} numbers from 1-8 (no spaces, e.g. 1234): ").strip()
 
     if len(numbers) != level or not numbers.isdigit():
         print("Try again!")
@@ -37,9 +38,9 @@ def computer_guess(level):
 
     chances = 10
     while chances > 0:
-        time.sleep(3)  # delay between guesses
+        time.sleep(3)  
 
-        # computer makes a random guess
+        #use instead of API (rate limit)
         guess = [random.randint(1, 8) for _ in range(level)]
 
         print(f"\033[34mYou have {chances} chances remaining\033[0m")
@@ -49,7 +50,6 @@ def computer_guess(level):
             print("\033[1mComputer guessed correctly!\033[0m")
             return
 
-        # evaluate feedback
         count = sum(1 for i in set(guess) if i in set(numbers))
         count2 = sum(1 for j in range(level) if guess[j] == numbers[j])
         print(f"{count} correct numbers")
@@ -68,8 +68,7 @@ def difficulty():
         return difficulty() 
 
 def multiplayer(level):
-    numbers = input(f"Player 2, secretly enter {level} numbers from 1-8, they may duplicate if you'd like (no spaces, e.g. 1134): ").strip()
-
+    numbers = getpass.getpass(f"Player 2, secretly enter {level} numbers from 1-8 (no spaces, e.g. 1234): ").strip()
     if len(numbers) != level or not numbers.isdigit():
         print("Try again!")
         return multiplayer(level)
@@ -102,7 +101,7 @@ def game(numbers, level):
     chances = 10
     print(f"\033[34mYou have {chances} chances remaining\033[0m")
     while chances != 0:
-        guess = input(f"Enter {level} numbers from 1-8 (no spaces, e.g. 1234), there may be duplicates: ") 
+        guess = input(f"Player 1, enter {level} numbers from 1-8 (no spaces, e.g. 1234), there may be duplicates: ") 
         list1 = [int(x) for x in guess]
 
         if len(guess) != level or any(not x.isdigit() for x in guess) or any(v < 1 or v > 8 for v in list1):
