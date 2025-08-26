@@ -95,7 +95,7 @@ def singleplayer(level):
     response = requests.get(url, params=params, timeout=5)
     numbers = [int(x) for x in response.text.strip().split()]
    #deebugprint(response)
-    #deebugprint(numbers)  
+    print(numbers)  
     game(numbers, level)
 
 def game(numbers, level): 
@@ -144,8 +144,9 @@ def game(numbers, level):
                     print(f"\033[4mHint: One of the numbers is {numbers[random_integer]}\033[0m")
                 elif chances == 4:
                     print(f"\033[4mHint: The sum of all numbers is {sum(numbers)}\033[0m")               
-
+              
     print("Out of chances, game over!")
+    print(f"Answer was:{numbers}")
 
 rules()
 

@@ -35,7 +35,7 @@ jobs:
             echo "1"   # mode: single player
             echo "4"   # difficulty
             cat guesses.txt
-          } | python main.py | tee game_run.txt
+          } | python main3.py | tee game_run.txt
 
       - name: Upload game transcript
         if: always()
