@@ -35,6 +35,8 @@ jobs:
             echo "1"   # mode: single player
             echo "4"   # difficulty
             cat guesses.txt
+            echo "m"   # leave single-player session
+            echo "q"   # quit at main menu
           } | timeout 30s python main3.py | tee game_run.txt
 
       - name: Upload game transcript
