@@ -10,5 +10,5 @@ A simple command-line Mastermind game in Python. Guess the secret number code (d
 Clone this repo then run the command in the main folder: 
 
 ```bash
-python3 main.py
+python3 main3.py
 
