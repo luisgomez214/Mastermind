@@ -21,6 +21,6 @@ Clone this repo then run the command in the main folder:
 
 ```bash
 python3 main3.py
+```
+ Follow commands shown in the terminal.
 
-
-Follow commands shown in the terminal.
