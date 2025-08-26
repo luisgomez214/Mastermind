@@ -6,7 +6,7 @@ OUT = Path("guesses.txt")
 guess = "1234"
 
 # Repeat it 10 times
-lines = [guess for _ in range(10)]
+lines = [guess for _ in range(11)]
 
 # Save to file
 OUT.write_text("\n".join(lines), encoding="utf-8")

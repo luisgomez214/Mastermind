@@ -20,7 +20,7 @@ def rules():
     print("\033[32mWelcome to Mastermind!\033[0m")
     print("This is a game where a player tries to guess the number combination.")
     print("Successfully guess the number code in 10 tries to win!")
-    enter = input("Type '1' for single, or '2'/'3'/'4' for multiplayer humans, or 'c' vs computer: ").strip().lower()
+    enter = input("Type '1' for single, or '2'/'3'/'4' for multiplayer humans, 'c' vs computer, or 'q' to quit: ").strip().lower()
 
     if enter == "1":
         level = difficulty()
@@ -31,6 +31,9 @@ def rules():
     elif enter == "c":
         level = difficulty()
         computer_guess(level)
+    elif enter == "q":
+        print("Goodbye!")
+        return "QUIT" 
     else:
         print("Try again!")
         return rules()
@@ -108,23 +111,28 @@ def difficulty():
         return difficulty() 
 
 def singleplayer(level):
-    url = "https://www.random.org/integers/"
-    params = {
-        "num": level,       
-        "min": 1,       
-        "max": 8,       
-        "col": 1,       
-        "base": 10,     
-        "format": "plain",
-        "rnd": "new"
-    }
+    while True:
+        url = "https://www.random.org/integers/"
+        params = {
+            "num": level,
+            "min": 1,
+            "max": 8,
+            "col": 1,
+            "base": 10,
+            "format": "plain",
+            "rnd": "new"
+        }
+        response = requests.get(url, params=params, timeout=5)
+        numbers = [int(x) for x in response.text.strip().split()]
+        # print(numbers)  
 
-    response = requests.get(url, params=params, timeout=5)
-    numbers = [int(x) for x in response.text.strip().split()]
-   #deebugprint(response)
-    print(numbers)  
-    game(numbers, level)
+        game(numbers, level)   
 
+        # ask to continue, same UX as multiplayer
+        choice = input("Enter to play next round, or 'm' to return to menu: ").strip().lower()
+        if choice == "m":
+            break
+    
 def game_n(numbers, level, num_players, codemaker):
     chances = 10 * (num_players - 1) 
     print(f"\033[34mYou have {chances} chances remaining\033[0m")
@@ -240,4 +248,6 @@ def game(numbers, level):
 
 if __name__ == "__main__":
     while True:
-        rules()
+        if rules() == "QUIT":
+            break
+
