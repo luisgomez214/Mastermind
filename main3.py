@@ -170,7 +170,7 @@ def game_n(numbers, level, num_players, codemaker):
             print(f"and {count2} correct locations")
 
             if chances in {7,4,1}:
-                if chances c == 7:
+                if chances == 7:
                     evens = sum(1 for n in numbers if n % 2 == 0)
                     odds  = len(numbers) - evens
                     print(f"\033[4mHint: There are {evens} even and {odds} odd numbers.\033[0m")
