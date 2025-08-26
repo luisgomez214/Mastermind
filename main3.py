@@ -55,12 +55,10 @@ def multiplayer_rotating_session(level: int, num_players: int):
     codemaker = 1  # start with Player 1 as codemaker (change if you prefer)
     while True:
         numbers = _get_secret(level, codemaker)
-        game_n(numbers, level, num_players, codemaker)  # plays one round, awards point
+        game_n(numbers, level, num_players, codemaker)  
         show_scoreboard()
-        # rotate codemaker 1→2→…→N→1
         codemaker = (codemaker % num_players) + 1
 
-        # tiny escape hatch back to menu; press Enter to keep playing
         choice = input("Enter to play next round, or 'm' to return to menu: ").strip().lower()
         if choice == "m":
             break
@@ -128,7 +126,6 @@ def singleplayer(level):
 
         game(numbers, level)   
 
-        # ask to continue, same UX as multiplayer
         choice = input("Enter to play next round, or 'm' to return to menu: ").strip().lower()
         if choice == "m":
             break
@@ -172,9 +169,8 @@ def game_n(numbers, level, num_players, codemaker):
             print(f"{count} correct numbers")
             print(f"and {count2} correct locations")
 
-            # optional hints at 7, 4, 1 (same as your single-player)
             if chances in {7,4,1}:
-                if chances == 7:
+                if chances c== 7:
                     evens = sum(1 for n in numbers if n % 2 == 0)
                     odds  = len(numbers) - evens
                     print(f"\033[4mHint: There are {evens} even and {odds} odd numbers.\033[0m")
@@ -185,7 +181,7 @@ def game_n(numbers, level, num_players, codemaker):
                     print(f"\033[4mHint: One of the numbers is {numbers[idx]}\033[0m")
 
             if chances == 0:
-                break  # out of guesses; end the outer while too
+                break  
 
     print("Out of chances, game over!")
     print(f"Answer was: {numbers}")
