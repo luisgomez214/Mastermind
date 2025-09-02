@@ -103,7 +103,7 @@ def multiplayer_rotating_session(level: int, num_players: int):
             if choice == "m":
                 WINNERS.clear()
                 SCORES.clear()
-                break
+                return
             if choice == "":
                 SCORES.append(ROUND_BREAK)
                 break
@@ -151,7 +151,7 @@ def computer_guess(level):
                 if choice == "m":
                     WINNERS.clear()
                     SCORES.clear()
-                    break
+                    return
                 if choice == "":
                     SCORES.append(ROUND_BREAK)
                     break
@@ -174,7 +174,7 @@ def computer_guess(level):
             if choice == "m":
                 WINNERS.clear()
                 SCORES.clear()
-                break
+                return
             if choice == "":
                 SCORES.append(ROUND_BREAK)
                 break
@@ -239,7 +239,7 @@ def singleplayer(level):
             if choice == "m":
                 WINNERS.clear()
                 SCORES.clear()
-                break
+                return
             if choice == "":
                 SCORES.append(ROUND_BREAK)
                 break 
