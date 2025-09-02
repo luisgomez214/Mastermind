@@ -8,6 +8,11 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      # Set this to 'false' to allow local RNG in CI without an API key
+      REQUIRE_RANDOM_ORG: "false"
+      # If you *do* have a key in repo secrets, uncomment the next line and set REQUIRE_RANDOM_ORG: "true"
+      # RANDOM_ORG_API_KEY: ${{ secrets.RANDOM_ORG_API_KEY }}
 
     steps:
       - name: Checkout repository
@@ -21,7 +26,8 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install requests
+          pip install requests python-dotenv
+
       - name: Generate guesses (10 identical guesses)
         run: |
           python .github/workflows/random.py
@@ -37,7 +43,7 @@ jobs:
             cat guesses.txt
             printf 'm\n' # leave single-player session
             printf 'q\n' # quit at main menu
-          } | timeout 30s python main3.py | tee game_run.txt
+          } | timeout 30s python main4.py | tee game_run.txt
 
       - name: Upload game transcript
         if: always()

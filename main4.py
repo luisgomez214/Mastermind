@@ -7,6 +7,8 @@ from collections import Counter
 import os
 from dotenv import load_dotenv
 
+REQUIRE_RANDOM_ORG = os.getenv("REQUIRE_RANDOM_ORG", "true").lower() == "true"
+
 load_dotenv()  
 
 RANDOM_ORG_API_KEY = os.getenv("RANDOM_ORG_API_KEY")
