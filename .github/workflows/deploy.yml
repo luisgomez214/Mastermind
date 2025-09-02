@@ -28,7 +28,7 @@ jobs:
           echo "---- guesses.txt ----"
           cat guesses.txt
 
-      - name: Run main.py non-interactively (1=single player, 4=Normal)
+      - name: Run main4.py non-interactively (1=single player, 4=Normal)
         run: |
           set -euo pipefail
           {
